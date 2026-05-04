@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ENGL111 Final Grammar Review</title>
+  <style>
+    :root{
+      --garnet:#8A1538;
+      --garnet-dark:#5f0f28;
+      --garnet-soft:#f7e8ee;
+      --cream:#fffaf3;
+      --ink:#2b2226;
+      --muted:#6d5c64;
+      --correct:#127c56;
+      --wrong:#b3261e;
+      --card:#ffffff;
+      --shadow:0 10px 30px rgba(88,15,43,.16);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(160deg, var(--cream), var(--garnet-soft));
+      color:var(--ink);
+      min-height:100vh;
+    }
+    .app{
+      max-width:860px;
+      margin:0 auto;
+      padding:18px;
+    }
+    header{
+      background:linear-gradient(135deg,var(--garnet),var(--garnet-dark));
+      color:white;
+      border-radius:var(--radius);
+      padding:22px 18px;
+      box-shadow:var(--shadow);
+      margin-bottom:16px;
+    }
+    h1{
+      font-size:clamp(1.55rem,5vw,2.5rem);
+      margin:0 0 8px;
+      line-height:1.05;
+    }
+    header p{
+      margin:0;
+      opacity:.92;
+      font-size:.98rem;
+    }
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+      margin-bottom:16px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+      gap:10px;
+    }
+    button, select, input{
+      font:inherit;
+    }
+    button{
+      border:0;
+      border-radius:16px;
+      padding:12px 14px;
+      background:var(--garnet);
+      color:white;
+      cursor:pointer;
+      font-weight:700;
+      min-height:46px;
+    }
+    button.secondary{
+      background:var(--garnet-soft);
+      color:var(--garnet-dark);
+    }
+    button.ghost{
+      background:#f4f0f1;
+      color:var(--ink);
+    }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    select, input[type="text"]{
+      width:100%;
+      border:2px solid #ead5dd;
+      border-radius:16px;
+      padding:12px 14px;
+      background:white;
+      color:var(--ink);
+      min-height:46px;
+    }
+    label{
+      display:block;
+      color:var(--muted);
+      font-size:.88rem;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(4,1fr);
+      gap:8px;
+      margin:12px 0;
+    }
+    .stat{
+      background:#fff7f9;
+      border:1px solid #edd1db;
+      border-radius:16px;
+      padding:10px 8px;
+      text-align:center;
+    }
+    .stat strong{
+      display:block;
+      color:var(--garnet-dark);
+      font-size:1.2rem;
+    }
+    .stat span{
+      font-size:.78rem;
+      color:var(--muted);
+    }
+    .progress-wrap{
+      background:#ead5dd;
+      border-radius:99px;
+      overflow:hidden;
+      height:14px;
+      margin:10px 0 2px;
+    }
+    .progress{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg,var(--garnet),#c94d73);
+      transition:width .25s ease;
+    }
+    .question-meta{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:10px;
+    }
+    .badge{
+      display:inline-block;
+      background:var(--garnet-soft);
+      color:var(--garnet-dark);
+      padding:6px 10px;
+      border-radius:99px;
+      font-weight:800;
+      font-size:.78rem;
+    }
+    .question{
+      font-size:1.25rem;
+      font-weight:800;
+      line-height:1.35;
+      margin:10px 0 16px;
+    }
+    .choices{
+      display:grid;
+      gap:10px;
+    }
+    .choice{
+      width:100%;
+      text-align:left;
+      background:#faf7f8;
+      color:var(--ink);
+      border:2px solid #ead5dd;
+      font-weight:700;
+    }
+    .choice:hover{
+      border-color:var(--garnet);
+    }
+    .feedback{
+      margin-top:14px;
+      padding:13px;
+      border-radius:16px;
+      display:none;
+      line-height:1.45;
+    }
+    .feedback.correct{
+      display:block;
+      background:#e7f5ef;
+      color:#064b32;
+      border:1px solid #b7e2d1;
+    }
+    .feedback.wrong{
+      display:block;
+      background:#fff0ee;
+      color:#6e160f;
+      border:1px solid #f1b7b2;
+    }
+    .arabic{
+      direction:rtl;
+      text-align:right;
+      font-family: "Tahoma", "Arial", sans-serif;
+      margin-top:6px;
+      font-weight:700;
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .hidden{display:none!important}
+    .small{
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.4;
+    }
+    .review-list{
+      padding-left:18px;
+    }
+    .review-list li{
+      margin:8px 0;
+    }
+    @media (max-width:620px){
+      .app{padding:12px}
+      header,.card{border-radius:18px}
+      .stats{grid-template-columns: repeat(2,1fr)}
+      .question{font-size:1.12rem}
+      .controls button{flex:1 1 140px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>ENGL111 Final Grammar Review</h1>
+      <p>Practice Units 4, 5, and 6 grammar. Choose a grammar point, answer questions, and build your streak.</p>
+    </header>
+
+    <section id="setup" class="card">
+      <div class="grid">
+        <div>
+          <label for="category">Grammar focus</label>
+          <select id="category"></select>
+        </div>
+        <div>
+          <label for="mode">Practice mode</label>
+          <select id="mode">
+            <option value="endless">Practice until I stop</option>
+            <option value="ten">10 questions - 5 minutes</option>
+            <option value="twenty">20 questions</option>
+          </select>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="startBtn">Start Practice</button>
+        <button id="resetBestBtn" class="secondary">Reset Best Score</button>
+      </div>
+      <p class="small">Wrong answers show a short Arabic explanation. Correct answers keep moving quickly.</p>
+    </section>
+
+    <section id="game" class="card hidden">
+      <div class="question-meta">
+        <span id="catBadge" class="badge"></span>
+        <span id="timer"></span>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><strong id="score">0</strong><span>Score</span></div>
+        <div class="stat"><strong id="streak">0</strong><span>Streak</span></div>
+        <div class="stat"><strong id="best">0</strong><span>Best</span></div>
+        <div class="stat"><strong id="count">0</strong><span>Answered</span></div>
+      </div>
+
+      <div class="progress-wrap"><div id="progress" class="progress"></div></div>
+      <div class="small" id="progressText"></div>
+
+      <div id="questionText" class="question"></div>
+      <div id="answerArea"></div>
+      <div id="feedback" class="feedback"></div>
+
+      <div class="controls">
+        <button id="submitBtn">Check</button>
+        <button id="nextBtn" class="secondary hidden">Next</button>
+        <button id="stopBtn" class="ghost">Stop</button>
+      </div>
+    </section>
+
+    <section id="summary" class="card hidden">
+      <h2>Practice Summary</h2>
+      <p id="summaryText"></p>
+      <div id="missedBox"></div>
+      <div class="controls">
+        <button id="againBtn">Practice Again</button>
+        <button id="homeBtn" class="secondary">Home</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const BANK = [];
+    const AR = {
+      simple:"في المضارع البسيط: he/she/it يأخذ الفعل s. في النفي والسؤال نستخدم do/does.",
+      first:"في الشرط الأول: If + present simple, will + verb.",
+      going:"مع going to نستخدم am/is/are + going to + verb.",
+      will:"بعد will أو won’t نستخدم الفعل الأساسي بدون s أو ing.",
+      perfect:"المضارع التام: have/has + التصريف الثالث. نستخدم has مع he/she/it.",
+      perfectPast:"استخدم الماضي البسيط مع وقت منتهٍ مثل yesterday/last/ago/in 2021. استخدم المضارع التام مع ever/never/yet/already/for/since/so far.",
+      should:"بعد should أو shouldn’t نستخدم الفعل الأساسي.",
+      speech:"اختر شكل الكلمة المناسب: اسم، فعل، صفة، أو حال حسب مكانها في الجملة."
+    };
+
+    function add(category, type, prompt, answer, choices, explanation){
+      BANK.push({category,type,prompt,answer,choices,explanation});
+    }
+
+    function buildBank(){
+      const simpleItems = [
+        ["Maha ___ English every day.","studies",["study","studies","studying"]],
+        ["They ___ to university by bus.","go",["go","goes","going"]],
+        ["My brother ___ coffee in the morning.","drinks",["drink","drinks","drinking"]],
+        ["We ___ in Lusail.","live",["live","lives","living"]],
+        ["The class ___ at 8 o’clock.","starts",["start","starts","starting"]],
+        ["I ___ my homework after dinner.","do",["do","does","doing"]],
+        ["Sara and Noor ___ Arabic and English.","speak",["speak","speaks","speaking"]],
+        ["The teacher ___ the lesson clearly.","explains",["explain","explains","explaining"]],
+        ["My phone ___ very well.","works",["work","works","working"]],
+        ["He ___ football on Friday.","plays",["play","plays","playing"]],
+        ["Ahmed ___ like fast food.","doesn’t",["don’t","doesn’t","isn’t"]],
+        ["They ___ watch TV before exams.","don’t",["doesn’t","don’t","aren’t"]],
+        ["___ she live near the university?","Does",["Do","Does","Is"]],
+        ["___ you study in the library?","Do",["Do","Does","Are"]],
+        ["My parents ___ work on Saturday.","don’t",["doesn’t","don’t","aren’t"]],
+        ["The restaurant ___ at 11 p.m.","closes",["close","closes","closing"]],
+        ["Water ___ at 100°C.","boils",["boil","boils","boiling"]],
+        ["The students ___ ready for the exam.","are",["is","are","am"]],
+        ["He ___ not late today.","is",["is","are","does"]],
+        ["___ they in the same study group?","Are",["Is","Are","Do"]]
+      ];
+      simpleItems.forEach(q=>add("Simple Present", "mcq", q[0], q[1], q[2], AR.simple));
+
+      const firstItems = [
+        ["If you study tonight, you ___ better tomorrow.","will feel",["feel","will feel","felt"]],
+        ["If it rains, we ___ at home.","will stay",["will stay","stay","stayed"]],
+        ["You will miss the bus if you ___ late.","are",["will be","are","were"]],
+        ["If she saves money, she ___ a new laptop.","will buy",["buys","will buy","bought"]],
+        ["If they work hard, they ___ the project.","will finish",["finish","will finish","finished"]],
+        ["If I have time, I ___ you.","will call",["call","will call","called"]],
+        ["He will be tired if he ___ late.","sleeps",["will sleep","sleep","sleeps"]],
+        ["If we leave now, we ___ on time.","will arrive",["arrive","will arrive","arrived"]],
+        ["If you eat too much sugar, you ___ sick.","will feel",["feel","will feel","felt"]],
+        ["If the teacher explains it again, I ___ understand.","will",["will","do","am"]],
+        ["If I ___ enough money, I will buy a new phone.","have",["will have","have","had"]],
+        ["If she ___ the exam, her family will be happy.","passes",["will pass","passes","passed"]],
+        ["If they don’t listen, they ___ the instructions.","won’t understand",["don’t understand","won’t understand","didn’t understand"]],
+        ["We won’t go outside if it ___ too hot.","is",["will be","is","was"]],
+        ["If you practice every day, your English ___ improve.","will",["does","will","is"]],
+        ["If Omar forgets his ID, he ___ enter the building.","won’t",["doesn’t","won’t","isn’t"]],
+        ["If the café is open, we ___ coffee there.","will get",["get","will get","got"]],
+        ["You will do well if you ___ carefully.","read",["will read","read","reads"]],
+        ["If she feels better, she ___ to class.","will come",["comes","will come","came"]],
+        ["If we finish early, we ___ a short break.","will take",["take","will take","took"]]
+      ];
+      firstItems.forEach(q=>add("First Conditional", "mcq", q[0], q[1], q[2], AR.first));
+
+      const goingItems = [
+        ["I ___ going to visit my cousin tonight.","am",["am","is","are"]],
+        ["She ___ going to apply for a job.","is",["am","is","are"]],
+        ["They ___ going to watch a movie.","are",["am","is","are"]],
+        ["___ you going to study after class?","Are",["Am","Is","Are"]],
+        ["He is going to ___ his room.","clean",["cleans","clean","cleaning"]],
+        ["We are going to ___ a presentation tomorrow.","give",["give","gives","giving"]],
+        ["My sister ___ going to start university next year.","is",["am","is","are"]],
+        ["Ali and Hamad ___ going to play football.","are",["am","is","are"]],
+        ["I am not going to ___ late tonight.","sleep",["sleep","sleeps","sleeping"]],
+        ["Is she going to ___ her friend?","call",["calls","call","calling"]],
+        ["The students are going to ___ for the final exam.","review",["reviews","review","reviewing"]],
+        ["We ___ going to cook dinner at home.","are",["am","is","are"]],
+        ["Maha is going to ___ a cover letter.","write",["write","writes","writing"]],
+        ["Are they going to ___ in the library?","meet",["meet","meets","meeting"]],
+        ["He ___ not going to buy fast food today.","is",["am","is","are"]],
+        ["I am going to ___ more water.","drink",["drink","drinks","drinking"]],
+        ["The company is going to ___ new employees.","recruit",["recruit","recruits","recruiting"]],
+        ["We are not going to ___ the test tomorrow.","take",["take","takes","taking"]],
+        ["___ Ahmed going to send the email?","Is",["Am","Is","Are"]],
+        ["You are going to ___ confident after practice.","feel",["feel","feels","feeling"]]
+      ];
+      goingItems.forEach(q=>add("Be Going To", "mcq", q[0], q[1], q[2], AR.going));
+
+      const willItems = [
+        ["I will ___ you after class.","call",["calls","call","calling"]],
+        ["She won’t ___ late tomorrow.","arrive",["arrives","arrive","arriving"]],
+        ["Will they ___ dinner at home?","have",["has","have","having"]],
+        ["We will ___ the project today.","finish",["finish","finishes","finishing"]],
+        ["He will ___ a new job soon.","start",["starts","start","starting"]],
+        ["Will you ___ the report tonight?","complete",["complete","completes","completing"]],
+        ["They will ___ football after school.","play",["play","plays","playing"]],
+        ["My parents won’t ___ this weekend.","travel",["travels","travel","traveling"]],
+        ["The teacher will ___ the grades later.","post",["posts","post","posting"]],
+        ["Will she ___ the exam next week?","take",["takes","take","taking"]],
+        ["I think Doha will ___ bigger in the future.","become",["becomes","become","becoming"]],
+        ["We won’t ___ fast food tonight.","eat",["eats","eat","eating"]],
+        ["The weather will ___ cooler in December.","get",["gets","get","getting"]],
+        ["Will Omar ___ the team meeting?","join",["joins","join","joining"]],
+        ["She will ___ a message when she arrives.","send",["sends","send","sending"]],
+        ["They won’t ___ the old layout.","change",["changes","change","changing"]],
+        ["I will ___ harder next time.","try",["tries","try","trying"]],
+        ["Will the café ___ at 7 a.m.?","open",["opens","open","opening"]],
+        ["This app will ___ you review grammar.","help",["helps","help","helping"]],
+        ["He won’t ___ his phone during class.","use",["uses","use","using"]]
+      ];
+      willItems.forEach(q=>add("Will / Won’t", "mcq", q[0], q[1], q[2], AR.will));
+
+      const perfectItems = [
+        ["She ___ finished her homework already.","has",["has","have","is"]],
+        ["They ___ visited Turkey before.","have",["has","have","are"]],
+        ["I have never ___ sushi.","eaten",["eat","ate","eaten"]],
+        ["He has ___ his keys.","lost",["lose","lost","losing"]],
+        ["We have lived here ___ 2022.","since",["for","since","ago"]],
+        ["Mona has studied English ___ six years.","for",["for","since","last"]],
+        ["Have you ___ seen snow?","ever",["ever","yet","since"]],
+        ["They haven’t finished the project ___.","yet",["already","yet","ever"]],
+        ["My brother has just ___ home.","arrived",["arrive","arrived","arriving"]],
+        ["How many books have you ___ this year?","read",["read","reads","reading"]],
+        ["She has never ___ a horse.","ridden",["ride","rode","ridden"]],
+        ["We have already ___ lunch.","had",["have","had","having"]],
+        ["Has Ahmed ___ his application?","sent",["send","sent","sending"]],
+        ["I haven’t ___ that movie before.","seen",["see","saw","seen"]],
+        ["They have ___ in the same company for two years.","worked",["work","worked","working"]],
+        ["The manager has ___ the new employee.","met",["meet","met","meeting"]],
+        ["Have you done your homework ___?","yet",["yet","already","since"]],
+        ["She has ___ three emails so far today.","written",["write","wrote","written"]],
+        ["We have not ___ the instructions.","understood",["understand","understood","understanding"]],
+        ["He has ___ to Qatar many times.","been",["be","was","been"]]
+      ];
+      perfectItems.forEach(q=>add("Present Perfect", "mcq", q[0], q[1], q[2], AR.perfect));
+
+      const ppPastItems = [
+        ["I ___ sushi three times this week.","have eaten",["ate","have eaten","eat"]],
+        ["We ___ to the mall last Saturday.","went",["went","have gone","go"]],
+        ["Ahmed has never ___ in the ocean.","swum",["swam","swum","swim"]],
+        ["She ___ five emails so far today.","has written",["wrote","has written","writes"]],
+        ["They ___ the new manager yesterday.","met",["met","have met","meet"]],
+        ["I ___ my keys and I still can’t find them.","have lost",["lost","have lost","lose"]],
+        ["My phone ___ when it fell this morning.","broke",["has broken","broke","breaks"]],
+        ["Mona has already ___ her homework.","done",["did","done","does"]],
+        ["We ___ that movie in 2021.","saw",["have seen","saw","see"]],
+        ["He ___ in Spain for two months and he loves it.","has been",["was","has been","is"]],
+        ["I ___ my friend three days ago.","met",["met","have met","meet"]],
+        ["They ___ twelve times so far this year.","have met",["met","have met","meet"]],
+        ["Last week, we ___ a new restaurant.","tried",["have tried","tried","try"]],
+        ["She ___ many medals since 2017.","has won",["won","has won","wins"]],
+        ["Yesterday, he ___ a personal record.","hit",["has hit","hit","hits"]],
+        ["I ___ never ___ such spicy food.","have eaten",["ate","have eaten","eat"]],
+        ["Two days ago, Omar ___ to the desert.","went",["has gone","went","goes"]],
+        ["Since then, people ___ many photos online.","have bought",["bought","have bought","buy"]],
+        ["My father ___ his ankle yesterday.","injured",["has injured","injured","injures"]],
+        ["She ___ more careful since the accident.","has been",["was","has been","is"]]
+      ];
+      ppPastItems.forEach(q=>add("Present Perfect vs. Past Simple", "mcq", q[0], q[1], q[2], AR.perfectPast));
+
+      const shouldItems = [
+        ["Students shouldn’t ___ during an online test.","cheat",["cheating","cheat","cheats"]],
+        ["You should ___ more water every day.","drink",["drink","drinks","drinking"]],
+        ["He should ___ early to catch the bus.","leave",["leave","leaves","leaving"]],
+        ["They shouldn’t ___ music loudly at night.","play",["playing","play","plays"]],
+        ["Should I ___ the email now?","send",["send","sends","sending"]],
+        ["People should ___ kind to each other.","be",["are","be","being"]],
+        ["You shouldn’t ___ your phone during class.","use",["using","use","uses"]],
+        ["We should ___ our homework before dinner.","do",["do","does","doing"]],
+        ["She should ___ a warm jacket.","bring",["brings","bring","bringing"]],
+        ["You should not ___ fast food every day.","eat",["eat","eats","eating"]],
+        ["A team leader should ___ clearly.","communicate",["communicates","communicate","communicating"]],
+        ["You should ___ your answers before you submit.","check",["checks","check","checking"]],
+        ["Students shouldn’t ___ late to presentations.","come",["comes","come","coming"]],
+        ["He should ___ for the interview.","prepare",["prepare","prepares","preparing"]],
+        ["We should ___ with our group members.","cooperate",["cooperate","cooperates","cooperating"]],
+        ["You shouldn’t ___ all night before the exam.","study",["studies","study","studying"]],
+        ["Should they ___ the teacher for help?","ask",["ask","asks","asking"]],
+        ["She should ___ a healthy lifestyle.","maintain",["maintain","maintains","maintaining"]],
+        ["You should ___ on the question carefully.","concentrate",["concentrates","concentrate","concentrating"]],
+        ["He shouldn’t ___ too much coffee at night.","drink",["drinks","drink","drinking"]]
+      ];
+      shouldItems.forEach(q=>add("Should / Shouldn’t", "mcq", q[0], q[1], q[2], AR.should));
+
+      const speechItems = [
+        ["Good ___ is important in teamwork.","communication",["communicate","communication","communicative"]],
+        ["Our team worked ___ to finish the project.","collaboratively",["collaborative","collaboration","collaboratively"]],
+        ["The manager tries to ___ the team.","motivate",["motivate","motivation","motivating"]],
+        ["She is very ___ and helps her colleagues.","supportive",["support","supportive","supportively"]],
+        ["Strong ___ skills help leaders succeed.","organisation",["organise","organisation","organised"]],
+        ["A good leader must be ___.","responsible",["responsibility","responsible","responsibly"]],
+        ["The company needs better ___ between departments.","communication",["communicate","communication","communicatively"]],
+        ["He works ___ with his team.","supportively",["support","supportive","supportively"]],
+        ["The ___ of the project was successful.","management",["manage","management","managerial"]],
+        ["She is very ___ when she speaks in meetings.","motivating",["motivate","motivation","motivating"]],
+        ["Good ___ helps teams achieve their goals.","collaboration",["collaborate","collaboration","collaborative"]],
+        ["He decided to ___ the group discussion.","lead",["leadership","leader","lead"]],
+        ["The teacher spoke ___ and clearly.","communicatively",["communicate","communicative","communicatively"]],
+        ["A strong ___ can improve team performance.","leader",["leader","lead","leading"]],
+        ["He has great ___ skills.","managerial",["managerial","management","manage"]],
+        ["The students gave a ___ answer.","detailed",["detail","detailed","details"]],
+        ["Her ___ helped the team continue.","motivation",["motivate","motivation","motivating"]],
+        ["They need to ___ the office layout.","organise",["organisation","organise","organised"]],
+        ["The team made a ___ decision.","collaborative",["collaborate","collaboration","collaborative"]],
+        ["He answered the question ___.","confidently",["confident","confidence","confidently"]]
+      ];
+      speechItems.forEach(q=>add("Parts of Speech", "mcq", q[0], q[1], q[2], AR.speech));
+
+      // Add controlled gap-fill alternatives by converting selected MCQs
+      BANK.forEach((q, idx) => {
+        if(idx % 5 === 0) q.type = "gap";
+      });
+    }
+
+    buildBank();
+
+    const categorySelect = document.getElementById("category");
+    const categories = ["All Grammar", ...new Set(BANK.map(q=>q.category))];
+    categories.forEach(c=>{
+      const opt=document.createElement("option");
+      opt.value=c; opt.textContent=c;
+      categorySelect.appendChild(opt);
+    });
+
+    let session = {
+      questions:[], index:0, score:0, streak:0, answered:0, checked:false,
+      max:null, timer:null, timeLeft:0, mode:"endless", current:null, missed:[]
+    };
+
+    const els = {
+      setup:document.getElementById("setup"), game:document.getElementById("game"), summary:document.getElementById("summary"),
+      startBtn:document.getElementById("startBtn"), resetBestBtn:document.getElementById("resetBestBtn"),
+      mode:document.getElementById("mode"), catBadge:document.getElementById("catBadge"), timer:document.getElementById("timer"),
+      score:document.getElementById("score"), streak:document.getElementById("streak"), best:document.getElementById("best"),
+      count:document.getElementById("count"), progress:document.getElementById("progress"), progressText:document.getElementById("progressText"),
+      questionText:document.getElementById("questionText"), answerArea:document.getElementById("answerArea"),
+      feedback:document.getElementById("feedback"), submitBtn:document.getElementById("submitBtn"), nextBtn:document.getElementById("nextBtn"),
+      stopBtn:document.getElementById("stopBtn"), summaryText:document.getElementById("summaryText"), missedBox:document.getElementById("missedBox"),
+      againBtn:document.getElementById("againBtn"), homeBtn:document.getElementById("homeBtn")
+    };
+
+    function shuffle(arr){
+      return [...arr].sort(()=>Math.random()-0.5);
+    }
+
+    function bestKey(){
+      return "engl111Best_" + categorySelect.value;
+    }
+
+    function getBest(){
+      return Number(localStorage.getItem(bestKey()) || 0);
+    }
+
+    function setBest(score){
+      if(score > getBest()) localStorage.setItem(bestKey(), String(score));
+    }
+
+    function normalize(s){
+      return String(s).trim().toLowerCase().replace(/[’']/g,"'").replace(/\s+/g," ");
+    }
+
+    function isCorrect(user, answer){
+      const u = normalize(user);
+      const a = normalize(answer);
+      const aliases = {
+        "doesn’t":["doesn't","does not","doesn’t"],
+        "don’t":["don't","do not","don’t"],
+        "won’t":["won't","will not","won’t"],
+        "hasn’t":["hasn't","has not","hasn’t"],
+        "haven’t":["haven't","have not","haven’t"],
+        "isn’t":["isn't","is not","isn’t"],
+        "aren’t":["aren't","are not","aren’t"],
+        "have eaten":["have eaten","'ve eaten"],
+        "has written":["has written","'s written"],
+        "have lost":["have lost","'ve lost"],
+        "has been":["has been","'s been"],
+        "have met":["have met","'ve met"],
+        "has won":["has won","'s won"],
+        "have bought":["have bought","'ve bought"],
+        "will feel":["will feel","'ll feel"],
+        "will stay":["will stay","'ll stay"],
+        "will buy":["will buy","'ll buy"],
+        "will finish":["will finish","'ll finish"],
+        "will call":["will call","'ll call"],
+        "will arrive":["will arrive","'ll arrive"],
+        "won’t understand":["won't understand","will not understand","won’t understand"],
+        "will get":["will get","'ll get"],
+        "will come":["will come","'ll come"],
+        "will take":["will take","'ll take"]
+      };
+      if(u === a) return true;
+      const list = aliases[a] || aliases[answer];
+      return list ? list.map(normalize).includes(u) : false;
+    }
+
+    function start(){
+      const cat = categorySelect.value;
+      let pool = cat === "All Grammar" ? BANK : BANK.filter(q=>q.category === cat);
+      pool = shuffle(pool);
+      const mode = els.mode.value;
+      const max = mode === "ten" ? 10 : mode === "twenty" ? 20 : null;
+      session = {questions:pool, index:0, score:0, streak:0, answered:0, checked:false, max, timer:null, timeLeft: mode==="ten" ? 300 : 0, mode, current:null, missed:[]};
+      els.setup.classList.add("hidden");
+      els.summary.classList.add("hidden");
+      els.game.classList.remove("hidden");
+      els.best.textContent = getBest();
+      if(mode === "ten") startTimer();
+      renderQuestion();
+    }
+
+    function startTimer(){
+      clearInterval(session.timer);
+      session.timer = setInterval(()=>{
+        session.timeLeft--;
+        updateStats();
+        if(session.timeLeft <= 0) finish("Time is up.");
+      },1000);
+    }
+
+    function formatTime(sec){
+      const m = Math.floor(sec/60);
+      const s = sec%60;
+      return `${m}:${String(s).padStart(2,"0")}`;
+    }
+
+    function updateStats(){
+      els.score.textContent = session.score;
+      els.streak.textContent = session.streak;
+      els.best.textContent = Math.max(getBest(), session.score);
+      els.count.textContent = session.answered;
+      els.timer.textContent = session.mode === "ten" ? `Time: ${formatTime(session.timeLeft)}` : "";
+      const max = session.max;
+      if(max){
+        const pct = Math.min(100, (session.answered / max) * 100);
+        els.progress.style.width = pct + "%";
+        els.progressText.textContent = `${session.answered} of ${max} questions answered`;
+      } else {
+        els.progress.style.width = Math.min(100, (session.streak % 10) * 10) + "%";
+        els.progressText.textContent = `Endless practice · Fill the bar by getting a streak of 10.`;
+      }
+    }
+
+    function renderQuestion(){
+      session.checked = false;
+      els.feedback.className = "feedback";
+      els.feedback.style.display = "none";
+      els.nextBtn.classList.add("hidden");
+      els.submitBtn.classList.remove("hidden");
+
+      if(session.index >= session.questions.length){
+        session.questions = shuffle(session.questions);
+        session.index = 0;
+      }
+      session.current = session.questions[session.index++];
+      const q = session.current;
+      els.catBadge.textContent = q.category;
+      els.questionText.textContent = q.prompt;
+      els.answerArea.innerHTML = "";
+
+      if(q.type === "mcq"){
+        const wrap = document.createElement("div");
+        wrap.className = "choices";
+        shuffle(q.choices).forEach(choice=>{
+          const btn = document.createElement("button");
+          btn.className = "choice";
+          btn.textContent = choice;
+          btn.onclick = () => {
+            [...wrap.children].forEach(b=>b.dataset.selected="false");
+            btn.dataset.selected = "true";
+            [...wrap.children].forEach(b=>b.style.borderColor="#ead5dd");
+            btn.style.borderColor = "var(--garnet)";
+          };
+          wrap.appendChild(btn);
+        });
+        els.answerArea.appendChild(wrap);
+      } else {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.id = "gapAnswer";
+        input.placeholder = "Type your answer";
+        input.autocomplete = "off";
+        input.addEventListener("keydown", e=>{
+          if(e.key === "Enter") checkAnswer();
+        });
+        els.answerArea.appendChild(input);
+        setTimeout(()=>input.focus(),50);
+      }
+      updateStats();
+    }
+
+    function getUserAnswer(){
+      const q = session.current;
+      if(q.type === "mcq"){
+        const selected = [...document.querySelectorAll(".choice")].find(b=>b.dataset.selected === "true");
+        return selected ? selected.textContent : "";
+      }
+      const input = document.getElementById("gapAnswer");
+      return input ? input.value : "";
+    }
+
+    function checkAnswer(){
+      if(session.checked) return;
+      const q = session.current;
+      const user = getUserAnswer();
+      if(!user){
+        els.feedback.className = "feedback wrong";
+        els.feedback.style.display = "block";
+        els.feedback.innerHTML = "Choose or type an answer first.";
+        return;
+      }
+      const ok = isCorrect(user, q.answer);
+      session.checked = true;
+      session.answered++;
+      if(ok){
+        session.score++;
+        session.streak++;
+        els.feedback.className = "feedback correct";
+        els.feedback.innerHTML = "Correct!";
+      } else {
+        session.streak = 0;
+        session.missed.push(q);
+        els.feedback.className = "feedback wrong";
+        els.feedback.innerHTML = `Not quite. Correct answer: <strong>${q.answer}</strong><div class="arabic">${q.explanation}</div>`;
+      }
+      els.feedback.style.display = "block";
+      setBest(session.score);
+      updateStats();
+
+      if(session.max && session.answered >= session.max){
+        els.submitBtn.classList.add("hidden");
+        els.nextBtn.textContent = "See Summary";
+        els.nextBtn.classList.remove("hidden");
+        els.nextBtn.onclick = () => finish();
+      } else {
+        els.submitBtn.classList.add("hidden");
+        els.nextBtn.textContent = "Next";
+        els.nextBtn.classList.remove("hidden");
+        els.nextBtn.onclick = renderQuestion;
+      }
+    }
+
+    function finish(reason=""){
+      clearInterval(session.timer);
+      setBest(session.score);
+      els.game.classList.add("hidden");
+      els.summary.classList.remove("hidden");
+      const total = session.answered || 0;
+      const percent = total ? Math.round((session.score/total)*100) : 0;
+      els.summaryText.innerHTML = `${reason ? reason + "<br>" : ""}<strong>Score:</strong> ${session.score}/${total} (${percent}%). <strong>Best score for this focus:</strong> ${getBest()}.`;
+
+      if(session.missed.length){
+        const unique = session.missed.slice(-6);
+        els.missedBox.innerHTML = `<h3>Review these:</h3><ul class="review-list">${unique.map(q=>`<li>${q.prompt}<br><strong>Answer:</strong> ${q.answer}</li>`).join("")}</ul>`;
+      } else {
+        els.missedBox.innerHTML = `<p>Great work. No missed questions in this round.</p>`;
+      }
+    }
+
+    els.startBtn.onclick = start;
+    els.submitBtn.onclick = checkAnswer;
+    els.stopBtn.onclick = () => finish("Practice stopped.");
+    els.againBtn.onclick = start;
+    els.homeBtn.onclick = () => {
+      clearInterval(session.timer);
+      els.summary.classList.add("hidden");
+      els.game.classList.add("hidden");
+      els.setup.classList.remove("hidden");
+    };
+    els.resetBestBtn.onclick = () => {
+      localStorage.removeItem(bestKey());
+      alert("Best score reset for this grammar focus.");
+    };
+
+  </script>
+</body>
+</html>
